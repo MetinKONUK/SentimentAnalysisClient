@@ -1,0 +1,1 @@
+## front-end part of the sentiment-analysis project
