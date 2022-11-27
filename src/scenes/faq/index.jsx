@@ -45,8 +45,8 @@ function FAQ() {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box>
-      <Header title="FAQ" />
+    <Box m="20px">
+      <Header title="FAQ" subtitle="frequently asked questions page" />
       { displayFaq(faqs, colors) }
     </Box>
   );
