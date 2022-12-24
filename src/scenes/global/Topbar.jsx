@@ -9,9 +9,12 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { getAuth, signOut } from 'firebase/auth';
+import { useDispatch } from 'react-redux';
 import { ColorModeContext, tokens } from '../../theme';
+import { unsaveUser } from '../../redux/user';
 
 function Topbar() {
+  const dispatch = useDispatch();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
@@ -44,7 +47,12 @@ function Topbar() {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton onClick={() => signOut(auth)}>
+        <IconButton onClick={() => {
+          signOut(auth).then(() => {
+            dispatch(unsaveUser());
+          });
+        }}
+        >
           <PersonOutlinedIcon />
         </IconButton>
       </Box>
