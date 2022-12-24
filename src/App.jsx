@@ -1,9 +1,13 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import { Routes, Route } from 'react-router-dom';
+import {
+  Routes, Route, useNavigate,
+} from 'react-router-dom';
+import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { SnackbarProvider } from 'notistack';
 import { ColorModeContext, useMode } from './theme';
-import Login from './authentication/Login';
+import Auth from './authentication/index';
 import Topbar from './scenes/global/Topbar';
 import Sidebar from './scenes/global/Sidebar';
 import Dashboard from './scenes/dashboard';
@@ -17,40 +21,64 @@ import Bar from './scenes/bar';
 import Pie from './scenes/pie';
 import Line from './scenes/line';
 import Geography from './scenes/geography';
-
 // mockdata
-const loggedIn = true;
+const loggedIn = false;
 
 function App() {
   const [theme, colorMode] = useMode();
+  const [authData, setAuthData] = useState(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // eslint-disable-next-line no-console
+        setAuthData(user);
+        navigate('/');
+      } else {
+        setAuthData(null);
+        navigate('/auth');
+      }
+    });
+  }, []);
   return (
-    <ColorModeContext.Provider value={colorMode}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <div className="app">
-          {loggedIn ? <Sidebar /> : null}
-          {/* <Sidebar /> */}
-          <main className="content">
+    <SnackbarProvider
+      maxSnack={5}
+      iconVariant={{
+        success: '✅🦄🐬❤️️',
+        error: '✖️🚩😱💔',
+        warning: '⚠️😒',
+        info: 'ℹ️🙈🙉🙊',
+      }}
+    >
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <div className="app">
+            {authData ? <Sidebar /> : null}
+            {/* <Sidebar /> */}
+            <main className="content">
 
-            {loggedIn ? <Topbar /> : null}
-            <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/contacts" element={<Contacts />} />
-              <Route path="/invoices" element={<Invoices />} />
-              <Route path="/form" element={<Form />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/bar" element={<Bar />} />
-              <Route path="/pie" element={<Pie />} />
-              <Route path="/line" element={<Line />} />
-              <Route path="/geography" element={<Geography />} />
-            </Routes>
-          </main>
-        </div>
-      </ThemeProvider>
-    </ColorModeContext.Provider>
+              {authData ? <Topbar /> : null}
+              <Routes>
+                <Route exact path="/" element={<Dashboard />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/invoices" element={<Invoices />} />
+                <Route path="/form" element={<Form />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/bar" element={<Bar />} />
+                <Route path="/pie" element={<Pie />} />
+                <Route path="/line" element={<Line />} />
+                <Route path="/geography" element={<Geography />} />
+              </Routes>
+            </main>
+          </div>
+        </ThemeProvider>
+      </ColorModeContext.Provider>
+    </SnackbarProvider>
   );
 }
 export default App;
