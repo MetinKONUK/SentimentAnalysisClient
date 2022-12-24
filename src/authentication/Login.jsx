@@ -1,6 +1,7 @@
 /* eslint-disable prefer-regex-literals */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   Avatar,
   Button,
@@ -14,6 +15,7 @@ import {
   RadioGroup,
 } from '@mui/material';
 import { useSnackbar } from 'notistack';
+import Axios from 'axios';
 import { indigo } from '@mui/material/colors';
 import {
   signInWithGoogle,
@@ -25,13 +27,15 @@ import googleIcon from './icons/google.png';
 import facebookIcon from './icons/facebook.png';
 import githubIcon from './icons/github.png';
 import headerIcon from './icons/header.png';
+import { savePosition } from '../redux/user';
 
 function Login() {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
   const [position, setPosition] = useState(null);
   const [credentials, setCredentials] = useState({});
 
-  const checkDataValidity = (data) => {
+  const checkDataValidity = async (data) => {
     const { email, password } = data;
     const emailAddressValidator = new RegExp('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$');
     const passwordValidator = new RegExp('^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$');
@@ -43,22 +47,69 @@ function Login() {
       enqueueSnackbar('Password must be at least 8 characters, contain at least one number, one uppercase and one lowercase letter!', { variant: 'warning' });
       return false;
     }
+    if (position === null) {
+      enqueueSnackbar('Please select the position you work on!', { variant: 'warning' });
+      return false;
+    }
+    if (position === 'employee') {
+      let exists = false;
+      await Axios.get('http://localhost:3001/read-employee').then((response) => {
+        for (let i = 0; i < response.data.length; i += 1) {
+          if (response.data[i].employeeCredentials.employeePrimaryEmailAddress === email) {
+            exists = true;
+            break;
+          }
+        }
+      });
+      if (!exists) {
+        enqueueSnackbar('There is no employee with this email!', { variant: 'warning' });
+        return false;
+      }
+    }
+    if (position === 'manager') {
+      let exists = false;
+      await Axios.get('http://localhost:3001/read-manager').then((response) => {
+        console.log(response.data);
+        for (let i = 0; i < response.data.length; i += 1) {
+          if (response.data[i].managerCredentials.managerPrimaryEmailAddress === email) {
+            exists = true;
+            break;
+          }
+        }
+      });
+      if (!exists) {
+        enqueueSnackbar('There is no manager with this email!', { variant: 'warning' });
+        return false;
+      }
+    }
+    if (position === 'developer') {
+      let exists = false;
+      await Axios.get('http://localhost:3001/read-developer').then((response) => {
+        console.log(response.data);
+        for (let i = 0; i < response.data.length; i += 1) {
+          if (response.data[i].developerCredentials.developerPrimaryEmailAddress === email) {
+            exists = true;
+            break;
+          }
+        }
+      });
+      if (!exists) {
+        enqueueSnackbar('There is no developer with this email!', { variant: 'warning' });
+        return false;
+      }
+    }
     return true;
   };
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = {
       email: credentials.email,
       password: credentials.password,
     };
-    if (checkDataValidity(data)) {
-      if (position === 'employee') {
-        //
-      } else if (position === 'manager') {
-        //
-      } else {
-        //
-      }
+    if (await checkDataValidity(data)) {
+      const { email, password } = data;
+      dispatch(savePosition(position));
+      loginWithEmailAndPassword(email, password);
     }
   };
   const handleChange = (event) => {
@@ -66,6 +117,21 @@ function Login() {
   };
   const handlePositionChange = (event) => {
     setPosition(event.target.value);
+  };
+  const handleGoogleAuth = () => {
+    // check if a user with that email exists
+    signInWithGoogle();
+    dispatch(savePosition(position));
+  };
+  const handleFacebookAuth = () => {
+    // check if a user with that email exists
+    signInWithFacebook();
+    dispatch(savePosition(position));
+  };
+  const handleGithubAuth = () => {
+    // check if a user with that email exists
+    signInWithGithub();
+    dispatch(savePosition(position));
   };
   return (
     <Box
@@ -117,7 +183,6 @@ function Login() {
           justifyContent="center"
         >
           <RadioGroup
-            defaultValue="employee"
             onChange={handlePositionChange}
           >
             <FormControlLabel
@@ -157,13 +222,12 @@ function Login() {
         >
           <Grid item xs={4}>
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{
                 mt: 0.5, mb: 0.5, bgcolor: 'white', borderRadius: 0, boxShadow: 0, '&:hover': { backgroundColor: 'white' },
               }}
-              onClick={signInWithGithub}
+              onClick={handleGithubAuth}
               startIcon={<Avatar src={githubIcon} />}
             >
               {null}
@@ -171,13 +235,12 @@ function Login() {
           </Grid>
           <Grid item xs={4}>
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{
                 mt: 0.5, mb: 0.5, bgcolor: 'white', borderRadius: 0, boxShadow: 0, '&:hover': { backgroundColor: 'white' },
               }}
-              onClick={signInWithFacebook}
+              onClick={handleFacebookAuth}
               startIcon={<Avatar src={facebookIcon} />}
             >
               {null}
@@ -185,13 +248,12 @@ function Login() {
           </Grid>
           <Grid item xs={4}>
             <Button
-              type="submit"
               fullWidth
               variant="contained"
               sx={{
                 mt: 0.5, mb: 0.5, bgcolor: 'white', borderRadius: 0, boxShadow: 0, '&:hover': { backgroundColor: 'white' },
               }}
-              onClick={signInWithGoogle}
+              onClick={handleGoogleAuth}
               startIcon={<Avatar src={googleIcon} />}
             >
               {null}
