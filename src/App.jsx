@@ -4,9 +4,10 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import {
   Routes, Route, useNavigate,
 } from 'react-router-dom';
-import { onAuthStateChanged, getAuth } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { SnackbarProvider } from 'notistack';
 import { useDispatch } from 'react-redux';
+import { auth } from './firebase';
 import { ColorModeContext, useMode } from './theme';
 import Auth from './authentication/index';
 import Topbar from './scenes/global/Topbar';
@@ -22,6 +23,8 @@ import Bar from './scenes/bar';
 import Pie from './scenes/pie';
 import Line from './scenes/line';
 import Geography from './scenes/geography';
+// self-coded
+import ManagerRegisterRequests from './scenes/developer/ManagerRegisterRequests';
 import { saveUser } from './redux/user';
 
 function App() {
@@ -30,7 +33,6 @@ function App() {
   const [authData, setAuthData] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
-    const auth = getAuth();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         // eslint-disable-next-line no-console
@@ -76,6 +78,7 @@ function App() {
                 <Route path="/pie" element={<Pie />} />
                 <Route path="/line" element={<Line />} />
                 <Route path="/geography" element={<Geography />} />
+                <Route path="/manager-movents" element={<ManagerRegisterRequests />} />
               </Routes>
             </main>
           </div>
