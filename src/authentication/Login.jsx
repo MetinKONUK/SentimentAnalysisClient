@@ -27,7 +27,7 @@ import googleIcon from './icons/google.png';
 import facebookIcon from './icons/facebook.png';
 import githubIcon from './icons/github.png';
 import headerIcon from './icons/header.png';
-import { savePosition } from '../redux/user';
+import { logIn, savePosition } from '../redux/user';
 
 function Login() {
   const { enqueueSnackbar } = useSnackbar();
@@ -108,8 +108,9 @@ function Login() {
     };
     if (await checkDataValidity(data)) {
       const { email, password } = data;
+      console.log(position, 'saved position');
       dispatch(savePosition(position));
-      loginWithEmailAndPassword(email, password);
+      dispatch(logIn({ email, password }));
     }
   };
   const handleChange = (event) => {

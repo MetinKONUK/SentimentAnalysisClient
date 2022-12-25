@@ -1,20 +1,29 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
+
+export const logIn = createAsyncThunk(
+  'user/saveUser',
+  async ({ email, password }) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  },
+);
 
 // eslint-disable-next-line import/prefer-default-export
 export const userSlice = createSlice({
   name: 'user',
   initialState: {
-    user: null,
+    userData: null,
     position: null,
   },
   reducers: {
     saveUser: (state, action) => {
-      state.user = action.payload;
+      state.userData = action.payload;
     },
     unsaveUser: (state) => {
-      state.user = null;
+      state.userData = null;
     },
     savePosition: (state, action) => {
       state.position = action.payload;

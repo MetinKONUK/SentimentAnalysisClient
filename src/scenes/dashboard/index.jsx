@@ -6,12 +6,14 @@ import Header from '../../components/Header';
 
 function Dashboard() {
   const user = useSelector((state) => state.user);
-  const position = useSelector((state) => state.position);
-  console.log(user, position);
+  const { userData, position } = user;
   return (
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+        {/* { userData.email }
+        <br />
+        { position } */}
       </Box>
     </Box>
   );
