@@ -25,7 +25,13 @@ import Line from './scenes/line';
 import Geography from './scenes/geography';
 // self-coded
 import ManagerRegisterRequests from './scenes/developer/ManagerRegisterRequests';
-import { saveUser } from './redux/user';
+import ManagersList from './scenes/developer/ManagersList';
+import DeveloperReports from './scenes/developer/Reports';
+import DeveloperRegister from './scenes/developer/DeveloperRegister';
+import DevelopersList from './scenes/developer/DevelopersList';
+import EmployeesList from './scenes/manager/EmployeesList';
+import EmployeeRegisterRequests from './scenes/manager/EmployeeRegisterRequests';
+import { saveUser, savePosition } from './redux/user';
 
 function App() {
   const dispatch = useDispatch();
@@ -35,9 +41,9 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        // eslint-disable-next-line no-console
-        console.log('onauthstatechangedhere');
         dispatch(saveUser(user));
+        const position = localStorage.getItem('position');
+        dispatch(savePosition(position));
         setAuthData(user);
         navigate('/');
       } else {
@@ -45,7 +51,7 @@ function App() {
         navigate('/auth');
       }
     });
-  }, []);
+  }, [dispatch]);
   return (
     <SnackbarProvider
       maxSnack={5}
@@ -79,6 +85,12 @@ function App() {
                 <Route path="/line" element={<Line />} />
                 <Route path="/geography" element={<Geography />} />
                 <Route path="/manager-movents" element={<ManagerRegisterRequests />} />
+                <Route path="/employee-movents" element={<EmployeeRegisterRequests />} />
+                <Route path="employees" element={<EmployeesList />} />
+                <Route path="/managers" element={<ManagersList />} />
+                <Route path="/developers" element={<DevelopersList />} />
+                <Route path="/developer-reports" element={<DeveloperReports />} />
+                <Route path="/developer-register" element={<DeveloperRegister />} />
               </Routes>
             </main>
           </div>

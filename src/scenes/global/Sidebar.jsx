@@ -48,7 +48,7 @@ function DeveloperLinks() {
       />
       <Item
         title="Reports"
-        to="/"
+        to="/developer-reports"
         icon={<DocumentScannerIcon />}
       />
       <Item
@@ -58,12 +58,17 @@ function DeveloperLinks() {
       />
       <Item
         title="Managers"
-        to="/"
+        to="/managers"
+        icon={<PersonIcon />}
+      />
+      <Item
+        title="Developers"
+        to="/developers"
         icon={<PersonIcon />}
       />
       <Item
         title="Register Developer"
-        to="/"
+        to="/developer-register"
         icon={<CodeIcon />}
       />
     </>
@@ -83,13 +88,13 @@ function ManagerLinks() {
         icon={<HomeOutlinedIcon />}
       />
       <Item
-        title="Employee Register Requests"
-        to="/"
+        title="Employee Movents"
+        to="/employee-movents"
         icon={<HowToRegIcon />}
       />
       <Item
         title="Employees"
-        to="/"
+        to="/employees"
         icon={<BadgeIcon />}
       />
     </>
