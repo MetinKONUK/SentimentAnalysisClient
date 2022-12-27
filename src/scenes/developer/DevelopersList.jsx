@@ -4,111 +4,65 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Typography, useTheme, Button,
+  Box, Typography, useTheme, Button, ModalManager,
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import Axios from 'axios';
 import { tokens } from '../../theme';
 import Header from '../../components/Header';
-import { registerWithEmailAndPassword } from '../../firebase';
 
-function ManagerRegisterRequests() {
+function DevelopersList() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [requests, setRequests] = useState([]);
+  const [developers, setDevelopers] = useState([]);
   useEffect(() => {
     (async () => {
-      await Axios.get('http://localhost:3001/read-manager-movent').then((response) => {
-        setRequests(response.data);
+      await Axios.get('http://localhost:3001/read-developer').then(async (response) => {
+        const { data } = await response;
+        const aux = data.map((developer) => ({
+          _id: developer['_id'],
+          developerName: developer.developerName,
+          developerLastname: developer.developerLastname,
+          developerPrimaryPhoneNumber: developer.developerPrimaryPhoneNumber,
+          developerPrimaryEmailAddress: developer.developerCredentials.developerPrimaryEmailAddress,
+        }));
+        setDevelopers(aux);
       });
     })();
   }, []);
-  const handleApproval = (event, params) => {
-    // insert manager data to managers collection
-    console.log(params.row);
-    const data = params.row;
-    Axios.post('http://localhost:3001/insert-manager', data);
-    registerWithEmailAndPassword(data.moventEmailAddress, data.moventPassword);
-    console.log('saved');
-    // delete manager movent data from manager movents collection
+  const handleDelete = (event, params) => {
     const { _id } = params.row;
-    console.log(_id);
-    Axios.delete(`http://localhost:3001/delete-manager-movent/${_id}`);
-  };
-  const handleDenial = (event, params) => {
-    const { _id } = params.row;
-    console.log(_id);
-    Axios.delete(`http://localhost:3001/delete-manager-movent/${_id}`);
+    Axios.delete(`http://localhost:3001/delete-developer/${_id}`).then(() => console.log('deleted'));
   };
   const columns = [
     { field: '_id', headerName: 'ID' },
     {
-      field: 'moventName',
+      field: 'developerName',
       headerName: 'Name',
       flex: 1,
       cellClassName: 'name-column-cell',
     },
     {
-      field: 'moventLastname',
+      field: 'developerLastname',
       headerName: 'Lastname',
       flex: 1,
       cellClassName: 'name-column-cell',
     },
     {
-      field: 'moventAge',
-      headerName: 'Age',
-      type: 'number',
-      headerAlign: 'left',
-      align: 'left',
-    },
-    {
-      field: 'moventPhoneNumber',
+      field: 'developerPrimaryPhoneNumber',
       headerName: 'Phone Number',
       type: 'number',
       headerAlign: 'left',
       align: 'left',
     },
     {
-      field: 'moventEmailAddress',
+      field: 'developerPrimaryEmailAddress',
       headerName: 'Email Address',
       flex: 1,
     },
     {
-      field: 'letterOfRequest',
-      headerName: 'Letter of Request',
-      flex: 1,
-    },
-    {
-      field: 'requestDate',
-      headerName: 'Request Date',
-      flex: 1,
-    },
-    {
-      field: 'approve',
-      headerName: 'Approve',
-      renderCell: (cellValues) => (
-        <Box
-          width="60%"
-          m="0 auto"
-          p="5px"
-          display="flex"
-          justifyContent="center"
-          backgroundColor={colors.greenAccent[700]}
-          borderRadius="0px"
-          sx={{ cursor: 'pointer' }}
-          onClick={(event) => {
-            handleApproval(event, cellValues);
-          }}
-        >
-          <Typography color={colors.grey[100]}>
-            ✅
-          </Typography>
-        </Box>
-      ),
-    },
-    {
-      field: 'dismiss',
-      headerName: 'Dismiss',
+      field: 'delete',
+      headerName: 'Delete',
       renderCell: (cellValues) => (
         <Box
           width="60%"
@@ -120,11 +74,11 @@ function ManagerRegisterRequests() {
           borderRadius="0px"
           sx={{ cursor: 'pointer' }}
           onClick={(event) => {
-            handleDenial(event, cellValues);
+            handleDelete(event, cellValues);
           }}
         >
           <Typography color={colors.grey[100]}>
-            ❌
+            🗑️
           </Typography>
         </Box>
       ),
@@ -133,7 +87,7 @@ function ManagerRegisterRequests() {
   return (
     <div>
       <Box ml={2.5} mr={2.5} mt={1.5}>
-        <Header title="MANAGER MOVENTS" subtitle="Manager movent requests are listed below..." />
+        <Header title="DEVELOPERS" subtitle="Developers are listed below..." />
         <Box
           m="40px 0 0 0"
           height="75vh"
@@ -160,11 +114,11 @@ function ManagerRegisterRequests() {
             },
           }}
         >
-          { requests && <DataGrid getRowId={(row) => row['_id']} columns={columns} rows={requests} /> }
+          { developers && <DataGrid getRowId={(row) => row['_id']} columns={columns} rows={developers} /> }
         </Box>
       </Box>
     </div>
   );
 }
 
-export default ManagerRegisterRequests;
+export default DevelopersList;
