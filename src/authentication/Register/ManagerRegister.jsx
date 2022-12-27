@@ -70,7 +70,7 @@ function ManagerRegister() {
         }
       }
     });
-    await Axios.get('http://localhost:3001/read-employee-movent').then((response) => {
+    await Axios.get('http://localhost:3001/read-employee-movent/all').then((response) => {
       for (let i = 0; i < response.data.length; i += 1) {
         if (response.data[i].moventEmailAddress === moventEmailAddress) {
           exists = true;

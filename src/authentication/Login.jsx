@@ -53,7 +53,7 @@ function Login() {
     }
     if (position === 'employee') {
       let exists = false;
-      await Axios.get('http://localhost:3001/read-employee').then((response) => {
+      await Axios.get('http://localhost:3001/read-employee/all').then((response) => {
         for (let i = 0; i < response.data.length; i += 1) {
           if (response.data[i].employeeCredentials.employeePrimaryEmailAddress === email) {
             exists = true;
@@ -68,7 +68,7 @@ function Login() {
     }
     if (position === 'manager') {
       let exists = false;
-      await Axios.get('http://localhost:3001/read-manager').then((response) => {
+      await Axios.get('http://localhost:3001/read-manager/all').then((response) => {
         console.log(response.data);
         for (let i = 0; i < response.data.length; i += 1) {
           if (response.data[i].managerCredentials.managerPrimaryEmailAddress === email) {
@@ -108,7 +108,7 @@ function Login() {
     };
     if (await checkDataValidity(data)) {
       const { email, password } = data;
-      console.log(position, 'saved position');
+      localStorage.setItem('position', position);
       dispatch(savePosition(position));
       dispatch(logIn({ email, password }));
     }
