@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useContext } from 'react';
 import {
   Box, IconButton, useTheme, InputBase,
@@ -8,6 +9,7 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
 import { getAuth, signOut } from 'firebase/auth';
 import { useDispatch } from 'react-redux';
 import { ColorModeContext, tokens } from '../../theme';
@@ -27,10 +29,7 @@ function Topbar() {
         backgroundColor={colors.primary[400]}
         borderRadius="3px"
       >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
+        { null }
       </Box>
       {/* ICONS */}
       <Box display="flex">
@@ -41,19 +40,13 @@ function Topbar() {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
         <IconButton onClick={() => {
           signOut(auth).then(() => {
             dispatch(unsaveUser());
           });
         }}
         >
-          <PersonOutlinedIcon />
+          <LogoutIcon />
         </IconButton>
       </Box>
     </Box>

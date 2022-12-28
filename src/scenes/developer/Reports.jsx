@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Box, Typography, useTheme, Button, ModalManager,
 } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Axios from 'axios';
 import { tokens } from '../../theme';
 import Header from '../../components/Header';
@@ -62,29 +62,6 @@ function Reports() {
       headerName: 'Analyze Result',
       flex: 1,
     },
-    {
-      field: 'delete',
-      headerName: 'Delete',
-      renderCell: (cellValues) => (
-        <Box
-          width="60%"
-          m="0 auto"
-          p="5px"
-          display="flex"
-          justifyContent="center"
-          backgroundColor={colors.redAccent[700]}
-          borderRadius="0px"
-          sx={{ cursor: 'pointer' }}
-          onClick={(event) => {
-            // handleDelete(event, cellValues);
-          }}
-        >
-          <Typography color={colors.grey[100]}>
-            🗑️
-          </Typography>
-        </Box>
-      ),
-    },
   ];
   return (
     <div>
@@ -116,7 +93,14 @@ function Reports() {
             },
           }}
         >
-          { reports && <DataGrid getRowId={(row) => row['_id']} columns={columns} rows={reports} /> }
+          { reports && (
+          <DataGrid
+            components={{ Toolbar: GridToolbar }}
+            getRowId={(row) => row['_id']}
+            columns={columns}
+            rows={reports}
+          />
+          ) }
         </Box>
       </Box>
     </div>

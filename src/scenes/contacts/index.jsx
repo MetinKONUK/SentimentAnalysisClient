@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { Box, useTheme } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import {
+  DataGrid, GridToolbar, GridToolbarContainer, GridToolbarExport,
+} from '@mui/x-data-grid';
 import { tokens } from '../../theme';
 import { mockDataContacts } from '../../data/mockData';
 import Header from '../../components/Header';
@@ -51,7 +53,11 @@ function Contacts() {
       flex: 1,
     },
   ];
-
+  const customToolbar = () => (
+    <GridToolbarContainer>
+      <GridToolbarExport />
+    </GridToolbarContainer>
+  );
   return (
     <Box m="20px">
       <Header title="CONTACTS" subtitle="List of Contacts for future references" />
@@ -87,7 +93,7 @@ function Contacts() {
         <DataGrid
           rows={mockDataContacts}
           columns={columns}
-          components={{ Toolbar: GridToolbar }}
+          components={{ Toolbar: customToolbar() }}
         />
       </Box>
     </Box>

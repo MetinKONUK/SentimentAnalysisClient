@@ -18,6 +18,9 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import DataObjectIcon from '@mui/icons-material/DataObject';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
+import developerIcon from './icons/developer.png';
+import managerIcon from './icons/manager.png';
+import employeeIcon from './icons/employee.png';
 
 // eslint-disable-next-line react/prop-types, object-curly-newline
 function Item({ title, to, icon }) {
@@ -115,7 +118,7 @@ function EmployeeLinks() {
       />
       <Item
         title="Reports"
-        to="/reports"
+        to="/employee-reports"
         icon={<DocumentScannerIcon />}
       />
       <Item
@@ -129,11 +132,17 @@ function EmployeeLinks() {
 function Sidebar() {
   const user = useSelector((state) => state.user);
   const { userData, position } = user;
-  const avatar = 'https://cdn-icons-png.flaticon.com/512/4333/4333609.png';
+  let avatar = null;
+  if (position === 'developer') {
+    avatar = developerIcon;
+  } else if (position === 'manager') {
+    avatar = managerIcon;
+  } else {
+    avatar = employeeIcon;
+  }
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState('Dashboard');
 
   return (
     <Box
@@ -173,7 +182,7 @@ function Sidebar() {
                 alignItems="center"
               >
                 <Typography variant="h3" color={colors.grey[100]}>
-                  ADMINIS
+                  Crystalin
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuOutlinedIcon />
@@ -194,8 +203,11 @@ function Sidebar() {
                 />
               </Box>
               <Box textAlign="center">
-                <Typography variant="h2" color={colors.grey[100]} fontWeight="bold" sx={{ m: '10px 0 0 0' }}> Ed Roh</Typography>
-                <Typography variant="h5" color={colors.greenAccent[500]}> VP Fancy Admin</Typography>
+                <Typography variant="h2" color={colors.greenAccent[500]} fontWeight="bold" sx={{ m: '10px 0 0 0' }}>
+                  {' '}
+                  { position }
+                  {' '}
+                </Typography>
               </Box>
             </Box>
           )}

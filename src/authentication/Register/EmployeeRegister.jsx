@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable prefer-regex-literals */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
@@ -19,6 +20,17 @@ import headerIcon from '../icons/headerr.png';
 function EmployeeRegister() {
   const { enqueueSnackbar } = useSnackbar();
   const [moventData, setMoventData] = useState({});
+  const [managersData, setManagersData] = useState([]);
+  const [selectedManager, setSelectedManager] = useState([]);
+  useEffect(() => {
+    // let managers = [];
+    (async () => {
+      await Axios.get('http://localhost:3001/read-manager/all').then(async (response) => {
+        setManagersData(response.data);
+        setSelectedManager(response.data[0]._id);
+      });
+    })();
+  }, []);
   const handleChange = (event) => {
     setMoventData({ ...moventData, [event.target.name]: event.target.value });
   };
@@ -103,7 +115,7 @@ function EmployeeRegister() {
       moventEmailAddress: moventData['employee-email-address'],
       letterOfRequest: moventData['employee-letter-of-request'],
       moventPassword: moventData['employee-password'],
-      requestedManagerId: '6397799df67bdc9b95f365b6',
+      requestedManagerId: selectedManager,
     };
     if (await checkDataValidity(data)) {
       Axios.post('http://localhost:3001/insert-employee-movent', data)
@@ -123,6 +135,17 @@ function EmployeeRegister() {
         });
     }
   };
+  const handleManagerSelect = (event) => {
+    setSelectedManager(event.target.value);
+  };
+  const displayManagers = () => managersData.map((manager) => (
+    // eslint-disable-next-line no-underscore-dangle
+    <MenuItem value={manager._id} key={manager._id}>
+      {manager.managerName}
+      {' '}
+      {manager.managerLastname}
+    </MenuItem>
+  ));
   return (
     <Box
       sx={{
@@ -228,13 +251,12 @@ function EmployeeRegister() {
           fullWidth
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={10}
+          value={selectedManager}
+          defaultValue=""
           label="manager"
-          // onChange={handleChange}
+          onChange={handleManagerSelect}
         >
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          { displayManagers() }
         </Select>
         <Button
           type="submit"

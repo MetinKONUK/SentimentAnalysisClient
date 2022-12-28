@@ -24,13 +24,18 @@ import Pie from './scenes/pie';
 import Line from './scenes/line';
 import Geography from './scenes/geography';
 // self-coded
+// developer
 import ManagerRegisterRequests from './scenes/developer/ManagerRegisterRequests';
 import ManagersList from './scenes/developer/ManagersList';
 import DeveloperReports from './scenes/developer/Reports';
 import DeveloperRegister from './scenes/developer/DeveloperRegister';
 import DevelopersList from './scenes/developer/DevelopersList';
+// manager
 import EmployeesList from './scenes/manager/EmployeesList';
 import EmployeeRegisterRequests from './scenes/manager/EmployeeRegisterRequests';
+// employee
+import EmployeeReports from './scenes/employee/Reports';
+import Data from './scenes/employee/Data';
 import { saveUser, savePosition } from './redux/user';
 
 function App() {
@@ -91,6 +96,8 @@ function App() {
                 <Route path="/developers" element={<DevelopersList />} />
                 <Route path="/developer-reports" element={<DeveloperReports />} />
                 <Route path="/developer-register" element={<DeveloperRegister />} />
+                <Route path="/employee-reports" element={<EmployeeReports />} />
+                <Route path="/data" element={<Data />} />
               </Routes>
             </main>
           </div>
